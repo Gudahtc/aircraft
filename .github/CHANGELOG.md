@@ -5,6 +5,10 @@
 <!-- Use the following format below -->
 <!--  1. [Changed Area] Title of changes - @github username (Name)  -->
 
+## 0.13.0
+
+1. [GENERAL] Fixed issue in C++ WASM Framework that caused performance degradation in some WASM modules - @frankkopp (Frank Kopp)
+
 ## 0.12.0
 
 1. [EFB/ATSU] Added NOAA (aviationweather.gov) as a METAR source - @tracernz (Mike)
@@ -31,7 +35,7 @@
 1. [MODEL] Replaced overhead decals - @Repsol2k
 1. [MODEL] General improvements to 3d model and textures - @MoreRightRudder, @Repsol2k, @tracernz
 1. [MODEL] Folding armrests - @Repsol2k
-1. [LIGHTING] Fixed Automatic Lighting on Spawn depending on outside lightcondition - @Maximilian-Reuter (\_Chaoz_)
+1. [LIGHTING] Fixed Automatic Lighting on Spawn depending on outside lightcondition - @Maximilian-Reuter (\_chaoz_)
 1. [EFCS] Implement calculated yaw damper gain  - @lukecologne (luke)
 1. [EFCS] Decrease yaw damper at low speeds on ground, down to 0 below 40kts - @lukecologne (luke)
 1. [FLIGHTMODEL] Fix pitch trim on approach - @donstim (donbikes)
@@ -89,6 +93,41 @@
 1. [GENERAL] Added environ AIRCRAFT_PROJECT_PREFIX to allow for custom aircraft project prefixes - @2hwk (2Cas)
 1. [EFB] Read from VFS JSON5 markup for Ground > Payload page - @2hwk (2Cas)
 1. [FADEC] Fadec rewrite/cleanup/commenting using cpp framework - @frankkopp (Frank Kopp)
+1. [EFB] Added warning for not compatible aircraft type to simbrief import - @2hwk (2Cas)
+1. [EFCS] Fix ground spoiler retraction after increasing TLA slightly above 0 - @lukecologne (luke)
+1. [FWC] Improved LDG LT memo to take into account light position - @BravoMike99 (bruno_pt99)
+1. [EFB] Added warning for not compatible aircraft type to simbrief import - @2hwk (2Cas)
+1. [PRESS] Add pressurization system failures - @mjuhe (Miquel Juhe)
+1. [EFB] Added simrate indicator to status bar - @2hwk (2Cas)
+1. [EFB] Added simrate and pause on TOD controls to control center - @2hwk (2Cas)
+1. [FMS] Implement missed approach route - @Benjozork (Benjamin Dupont), @tracernz (Mike), @saschl (saschl#9432), @BlueberryKing (BlueberryKing)
+1. [AUTOFLIGHT] Implement NAV IN GA - @lukecologne (luke)
+1. [FMS] Implement ability to program alternate routing - @Benjozork (Benjamin Dupont), @tracernz (Mike), @saschl (saschl#9432), @BlueberryKing (BlueberryKing)
+1. [FMS] Fix stringing logic between SID/STAR and enroute - @Benjozork (Benjamin Dupont), @tracernz (Mike), @saschl (saschl#9432), @BlueberryKing (BlueberryKing)
+1. [FMS] Improve altitude/speed constraint robustness on procedures - @Benjozork (Benjamin Dupont), @tracernz (Mike), @saschl (saschl#9432), @BlueberryKing (BlueberryKing)
+1. [ISIS] Fixed localiser deviation when on the back beam - @tracernz (Mike)
+1. [FMS/AP/ND/PFD] Added support for localiser back course approaches - @tracer (Mike)
+1. [ND] Fix color of navaids at the active leg termination - @BlueberryKing (BlueberryKing)
+1. [EFB] Added a takeoff performance calculator - @donstim (donbikes), @tracernz (Mike)
+1. [MCDU] Removed V-speed auto-fill function - @tracernz (Mike)
+1. [PFD] Implement alerts within artificial horizon (ROP, ROW, OANS, stall, windshear) @flogross89 (Flo)
+1. [MCDU] Fixed ZFW Autofill with lbs during boarding @ShreyasKallingal
+1. [FWC] Fix NW STRG DISC turning amber too soon - @adoggman (Andrew)
+1. [FMS] Fix VNAV crash for steep approaches - @BlueberryKing (BlueberryKing)
+1. [GPWS] Fixed behaviour and trigger conditions for GPWS Mode 4 submodes - @LeechCZ (Leech)
+1. [FWS] Improved landing memo gear logic - @tracernz (Mike)
+1. [FMS] Selected navaids are now reset on entering the done flight phase - @tracernz (Mike)
+1. [FMS] Fix tailwind component of trip wind being treated as a headwind - @BlueberryKing (BlueberryKing)
+1. [FMS] Improved NAVAID page - @tracernz (Mike)
+1. [MCDU] Fixed ZFW Autofill with lbs during boarding @ShreyasKallingal
+1. [FADEC] Added quick start for engines and APU - @frankkopp (Frank Kopp) - @Gurgel100 (Pascal)
+1. [EFB] Added expedited presets - @frankkopp (Frank Kopp)
+1. [FMS] Show runway ident on lateral/vertical revision page of the missed approach point - @BlueberryKing (BlueberryKing)
+1. [ECAM] Fixed ALL ECAM Button cycling through STS page and being inconsisten on press - @Maximilian-Reuter (\_chaoz_)
+1. [CDU] Fix for EFOB calculation not pulling from block fuel prior to engine start - @PatM (Patrick Macken)
+1. [FMS] Run vertical predictions without V-speeds - @BlueberryKing (BlueberryKing)
+1. [ELEC] Use ADIRU and LGCIU signals for speed and in flight determination - @Gurgel100 (Pascal)
+1. [FMS] Do not transmit bearing information to ND on manual legs - @BravoMike99 (bruno_pt99)
 
 ## 0.11.0
 

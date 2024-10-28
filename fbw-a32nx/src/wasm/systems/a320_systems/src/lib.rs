@@ -11,7 +11,7 @@ mod pneumatic;
 mod power_consumption;
 
 use self::{
-    air_conditioning::{A320AirConditioning, A320PressurizationOverheadPanel},
+    air_conditioning::A320AirConditioning,
     fuel::A320Fuel,
     payload::A320Payload,
     pneumatic::{A320Pneumatic, A320PneumaticOverheadPanel},
@@ -22,11 +22,11 @@ use electrical::{
     APU_START_MOTOR_BUS_TYPE,
 };
 use hydraulic::{A320Hydraulic, A320HydraulicOverheadPanel};
-use navigation::A320RadioAltimeters;
+use navigation::{A320AirDataInertialReferenceSystemBuilder, A320RadioAltimeters};
 use power_consumption::A320PowerConsumption;
+use systems::enhanced_gpwc::EnhancedGroundProximityWarningComputer;
 use systems::simulation::InitContext;
-use systems::{enhanced_gpwc::EnhancedGroundProximityWarningComputer, shared::MachNumber};
-use uom::si::{f64::Length, length::nautical_mile, quantities::Velocity, velocity::knot};
+use uom::si::{f64::Length, length::nautical_mile};
 
 use systems::{
     air_starter_unit::AirStarterUnit,
@@ -55,7 +55,6 @@ pub struct A320 {
     apu_fire_overhead: AuxiliaryPowerUnitFireOverheadPanel,
     apu_overhead: AuxiliaryPowerUnitOverheadPanel,
     pneumatic_overhead: A320PneumaticOverheadPanel,
-    pressurization_overhead: A320PressurizationOverheadPanel,
     electrical_overhead: A320ElectricalOverheadPanel,
     emergency_electrical_overhead: A320EmergencyElectricalOverheadPanel,
     payload: A320Payload,
@@ -80,11 +79,7 @@ pub struct A320 {
 impl A320 {
     pub fn new(context: &mut InitContext) -> A320 {
         A320 {
-            adirs: AirDataInertialReferenceSystem::new(
-                context,
-                Velocity::new::<knot>(350.),
-                MachNumber(0.82),
-            ),
+            adirs: A320AirDataInertialReferenceSystemBuilder::build(context),
             adirs_overhead: AirDataInertialReferenceSystemOverheadPanel::new(context),
             air_conditioning: A320AirConditioning::new(context),
             apu: AuxiliaryPowerUnitFactory::new_aps3200(
@@ -98,7 +93,6 @@ impl A320 {
             apu_fire_overhead: AuxiliaryPowerUnitFireOverheadPanel::new(context),
             apu_overhead: AuxiliaryPowerUnitOverheadPanel::new(context),
             pneumatic_overhead: A320PneumaticOverheadPanel::new(context),
-            pressurization_overhead: A320PressurizationOverheadPanel::new(context),
             electrical_overhead: A320ElectricalOverheadPanel::new(context),
             emergency_electrical_overhead: A320EmergencyElectricalOverheadPanel::new(context),
             payload: A320Payload::new(context),
@@ -118,7 +112,7 @@ impl A320 {
             hydraulic: A320Hydraulic::new(context),
             hydraulic_overhead: A320HydraulicOverheadPanel::new(context),
             autobrake_panel: AutobrakePanel::new(context),
-            landing_gear: LandingGear::new(context),
+            landing_gear: LandingGear::new(context, false),
             pneumatic: A320Pneumatic::new(context),
             radio_altimeters: A320RadioAltimeters::new(context),
             egpwc: EnhancedGroundProximityWarningComputer::new(
@@ -147,6 +141,7 @@ impl Aircraft for A320 {
         self.apu.update_before_electrical(
             context,
             &self.apu_overhead,
+            false, // Todo: fire detection system
             &self.apu_fire_overhead,
             self.pneumatic_overhead.apu_bleed_is_on(),
             // This will be replaced when integrating the whole electrical system.
@@ -171,6 +166,7 @@ impl Aircraft for A320 {
             [&self.engine_1, &self.engine_2],
             &self.hydraulic,
             self.lgcius.lgciu1(),
+            &self.adirs,
         );
 
         self.electrical_overhead
@@ -252,7 +248,6 @@ impl Aircraft for A320 {
             &self.engine_fire_overhead,
             &self.payload,
             &self.pneumatic,
-            &self.pressurization_overhead,
             [self.lgcius.lgciu1(), self.lgcius.lgciu2()],
         );
 
@@ -274,7 +269,6 @@ impl SimulationElement for A320 {
         self.emergency_electrical_overhead.accept(visitor);
         self.fuel.accept(visitor);
         self.pneumatic_overhead.accept(visitor);
-        self.pressurization_overhead.accept(visitor);
         self.engine_1.accept(visitor);
         self.engine_2.accept(visitor);
         self.engine_fire_overhead.accept(visitor);

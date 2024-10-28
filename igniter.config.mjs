@@ -130,7 +130,7 @@ export default new TaskOfTasks("all", [
                 [
                     'fbw-common/src/wasm/cpp-msfs-framework',
                     'fbw-common/src/wasm/extra-backend',
-                    'fbw-common/src/wasm/fadec_common_v2',
+                    'fbw-common/src/wasm/fadec_common',
                     'fbw-a32nx/src/wasm/extra-backend-a32nx',
                     'fbw-a32nx/src/wasm/fadec_a32nx',
                     'fbw-a32nx/out/flybywire-aircraft-a320-neo/SimObjects/AirPlanes/FlyByWire_A320_NEO/panel/extra-backend-a32nx.wasm',
@@ -174,7 +174,9 @@ export default new TaskOfTasks("all", [
                 'npm run build-a380x:systems-host',
                 [
                     'fbw-a380x/src/systems/systems-host',
-                    'fbw-a380x/out/flybywire-aircraft-a380-842/html_ui/Pages/VCockpit/Instruments/A380X/SystemsHost'
+                    'fbw-a380x/src/systems/shared/src',
+                    'fbw-common/src/systems/shared/src',
+                    'fbw-a380x/out/flybywire-aircraft-a380-842/html_ui/Pages/VCockpit/Instruments/A380X/SystemsHost',
                 ]
             ),
             new TaskOfTasks("instruments", getA380InstrumentsIgniterTasks(), true),
@@ -209,11 +211,11 @@ export default new TaskOfTasks("all", [
                 [
                     'fbw-common/src/wasm/cpp-msfs-framework',
                     'fbw-common/src/wasm/extra-backend',
-                    'fbw-common/src/wasm/fadec_common_v2',
+                    'fbw-common/src/wasm/fadec_common',
                     'fbw-a380x/src/wasm/extra-backend-a380x',
                     'fbw-a380x/src/wasm/fadec_a380x',
                     'fbw-a380x/out/flybywire-aircraft-a380-842/SimObjects/AirPlanes/FlyByWire_A380_842/panel/extra-backend-a380x.wasm',
-                    'fbw-a32nx/out/flybywire-aircraft-a380-842/SimObjects/AirPlanes/FlyByWire_A380_842/panel/fadec-a380x.wasm'
+                    'fbw-a380x/out/flybywire-aircraft-a380-842/SimObjects/AirPlanes/FlyByWire_A380_842/panel/fadec-a380x.wasm'
                 ]),
         ], true),
 
