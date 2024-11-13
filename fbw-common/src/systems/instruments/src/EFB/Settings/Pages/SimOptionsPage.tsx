@@ -2,7 +2,8 @@
 // SPDX-License-Identifier: GPL-3.0
 
 /* eslint-disable max-len */
-import React, { useContext, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
+import Slider from 'rc-slider';
 import {
   DefaultPilotSeatConfig,
   PilotSeatConfig,
@@ -14,7 +15,7 @@ import {
 import { toast } from 'react-toastify';
 import { t } from '../../Localization/translation';
 import { Toggle } from '../../UtilComponents/Form/Toggle';
-import { ButtonType, SettingItem, SettingsPage } from '../Settings';
+import { ButtonType, SettingGroup, SettingItem, SettingsPage } from '../Settings';
 
 import { SelectGroup, SelectItem } from '../../UtilComponents/Form/Select';
 import { SimpleInput } from '../../UtilComponents/Form/SimpleInput/SimpleInput';
@@ -35,8 +36,15 @@ export const SimOptionsPage = () => {
   const [simbridgeEnabled, setSimbridgeEnabled] = usePersistentProperty('CONFIG_SIMBRIDGE_ENABLED', 'AUTO ON');
   const [radioReceiverUsage, setRadioReceiverUsage] = usePersistentProperty('RADIO_RECEIVER_USAGE_ENABLED', '0');
   const [, setRadioReceiverUsageSimVar] = useSimVar('L:A32NX_RADIO_RECEIVER_USAGE_ENABLED', 'number', 0);
+  const [fdrEnabled, setFdrEnabled] = usePersistentProperty('FDR_ENABLED', '1');
+  const [, setFdrEnabledSimVar] = useSimVar('L:A32NX_FDR_ENABLED', 'number', 1);
   const [wheelChocksEnabled, setWheelChocksEnabled] = usePersistentNumberProperty('MODEL_WHEELCHOCKS_ENABLED', 1);
   const [conesEnabled, setConesEnabled] = usePersistentNumberProperty('MODEL_CONES_ENABLED', 1);
+  const [usingCabinAutobrightness, setUsingCabinAutobrightness] = usePersistentNumberProperty(
+    'CABIN_USING_AUTOBRIGHTNESS',
+    1,
+  );
+  const [cabinManualBrightness, setCabinManualBrightness] = usePersistentNumberProperty('CABIN_MANUAL_BRIGHTNESS', 0);
   const [pilotSeat, setPilotSeat] = usePersistentProperty('CONFIG_PILOT_SEAT', DefaultPilotSeatConfig);
 
   const defaultBaroButtons: ButtonType[] = [
@@ -57,6 +65,8 @@ export const SimOptionsPage = () => {
     { name: t('Settings.SimOptions.Right'), setting: PilotSeatConfig.Right },
   ];
 
+  const cabinBrightnessSliderRef = useRef<any>(null);
+
   return (
     <>
       {!showThrottleSettings && (
@@ -75,19 +85,21 @@ export const SimOptionsPage = () => {
             </SelectGroup>
           </SettingItem>
 
-          <SettingItem name={t('Settings.SimOptions.SyncMsfsFlightPlan')}>
-            <SelectGroup>
-              {fpSyncButtons.map((button) => (
-                <SelectItem
-                  key={button.setting}
-                  onSelect={() => setFpSync(button.setting)}
-                  selected={fpSync === button.setting}
-                >
-                  {button.name}
-                </SelectItem>
-              ))}
-            </SelectGroup>
-          </SettingItem>
+          {aircraftContext.settingsPages.sim.msfsFplnSync && (
+            <SettingItem name={t('Settings.SimOptions.SyncMsfsFlightPlan')}>
+              <SelectGroup>
+                {fpSyncButtons.map((button) => (
+                  <SelectItem
+                    key={button.setting}
+                    onSelect={() => setFpSync(button.setting)}
+                    selected={fpSync === button.setting}
+                  >
+                    {button.name}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SettingItem>
+          )}
 
           <SettingItem name={t('Settings.SimOptions.EnableSimBridge')}>
             <SelectGroup>
@@ -176,6 +188,16 @@ export const SimOptionsPage = () => {
             />
           </SettingItem>
 
+          <SettingItem name={t('Settings.SimOptions.FdrEnabled')}>
+            <Toggle
+              value={fdrEnabled === '1'}
+              onToggle={(value) => {
+                setFdrEnabled(value ? '1' : '0');
+                setFdrEnabledSimVar(value ? 1 : 0);
+              }}
+            />
+          </SettingItem>
+
           {aircraftContext.settingsPages.sim.wheelChocks && (
             <SettingItem name={t('Settings.SimOptions.WheelChocksEnabled')}>
               <Toggle
@@ -223,6 +245,41 @@ export const SimOptionsPage = () => {
                 ))}
               </SelectGroup>
             </SettingItem>
+          )}
+
+          {aircraftContext.settingsPages.sim.cabinLighting && (
+            <SettingGroup>
+              <SettingItem name={t('Settings.SimOptions.CabinAutoBrightness')}>
+                <Toggle
+                  value={usingCabinAutobrightness === 1}
+                  onToggle={(value) => {
+                    setUsingCabinAutobrightness(value ? 1 : 0);
+                  }}
+                />
+              </SettingItem>
+
+              {!usingCabinAutobrightness && (
+                <SettingItem name={t('Settings.SimOptions.CabinManualBrightness')}>
+                  <div className="flex flex-row items-center space-x-8">
+                    <Slider
+                      ref={cabinBrightnessSliderRef}
+                      style={{ width: '24rem' }}
+                      value={cabinManualBrightness}
+                      onChange={(value) => setCabinManualBrightness(value)}
+                      onAfterChange={() => cabinBrightnessSliderRef.current.blur()}
+                    />
+                    <SimpleInput
+                      min={0}
+                      max={100}
+                      value={cabinManualBrightness}
+                      className="w-20 text-center"
+                      onChange={(value) => setCabinManualBrightness(Number.parseInt(value))}
+                      number
+                    />
+                  </div>
+                </SettingItem>
+              )}
+            </SettingGroup>
           )}
         </SettingsPage>
       )}
